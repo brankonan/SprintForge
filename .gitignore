@@ -1,0 +1,33 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node (kad budeš radio frontend)
+node_modules/
+dist/
+
+# Env files (BITNO za kasnije)
+.env
+.env.*
+
+# App settings (optional kasnije)
+appsettings.Development.json
+
+# Docker
+docker-compose.override.yml
