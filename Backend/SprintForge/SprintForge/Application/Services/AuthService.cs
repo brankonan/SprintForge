@@ -1,15 +1,16 @@
-﻿using SprintForge.Data;
-using SprintForge.Models;
+using SprintForge.Application.Interfaces;
+using SprintForge.Domain.Entities;
 using SprintForge.Dtos;
+using SprintForge.Infrastructure;
 
-namespace SprintForge.Services;
+namespace SprintForge.Application.Services;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
-    private readonly JwtService _jwtService;
+    private readonly IJwtService _jwtService;
 
-    public AuthService(AppDbContext context, JwtService jwtService)
+    public AuthService(AppDbContext context, IJwtService jwtService)
     {
         _context = context;
         _jwtService = jwtService;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SprintForge.Data;
+using SprintForge.Infrastructure;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace SprintForge.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SprintForge.Models.Artifact", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.Artifact", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace SprintForge.Migrations
                     b.ToTable("Artifacts");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.Sprint", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.Sprint", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace SprintForge.Migrations
                     b.ToTable("Sprints");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.SprintTask", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.SprintTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,7 +123,7 @@ namespace SprintForge.Migrations
                     b.ToTable("SprintTasks");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.User", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,9 +163,9 @@ namespace SprintForge.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.Artifact", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.Artifact", b =>
                 {
-                    b.HasOne("SprintForge.Models.SprintTask", "SprintTask")
+                    b.HasOne("SprintForge.Domain.Entities.SprintTask", "SprintTask")
                         .WithMany("Artifacts")
                         .HasForeignKey("SprintTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -174,9 +174,9 @@ namespace SprintForge.Migrations
                     b.Navigation("SprintTask");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.Sprint", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.Sprint", b =>
                 {
-                    b.HasOne("SprintForge.Models.User", "User")
+                    b.HasOne("SprintForge.Domain.Entities.User", "User")
                         .WithMany("Sprints")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -185,9 +185,9 @@ namespace SprintForge.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.SprintTask", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.SprintTask", b =>
                 {
-                    b.HasOne("SprintForge.Models.Sprint", "Sprint")
+                    b.HasOne("SprintForge.Domain.Entities.Sprint", "Sprint")
                         .WithMany("Tasks")
                         .HasForeignKey("SprintId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -196,17 +196,17 @@ namespace SprintForge.Migrations
                     b.Navigation("Sprint");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.Sprint", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.Sprint", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.SprintTask", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.SprintTask", b =>
                 {
                     b.Navigation("Artifacts");
                 });
 
-            modelBuilder.Entity("SprintForge.Models.User", b =>
+            modelBuilder.Entity("SprintForge.Domain.Entities.User", b =>
                 {
                     b.Navigation("Sprints");
                 });

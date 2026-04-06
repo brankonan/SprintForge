@@ -1,12 +1,13 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SprintForge.Models;
+using SprintForge.Application.Interfaces;
+using SprintForge.Domain.Entities;
 
-namespace SprintForge.Services;
+namespace SprintForge.Application.Services;
 
-public class JwtService
+public class JwtService : IJwtService
 {
     private readonly IConfiguration _config;
 

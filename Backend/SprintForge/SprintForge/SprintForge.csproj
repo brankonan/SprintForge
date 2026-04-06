@@ -23,10 +23,5 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Mapping\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace SprintForge.Models;
+namespace SprintForge.Domain.Entities;
 
 public class SprintTask
 {

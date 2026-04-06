@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SprintForge.Models;
+using Microsoft.EntityFrameworkCore;
+using SprintForge.Domain.Entities;
 
-namespace SprintForge.Data;
+namespace SprintForge.Infrastructure;
 
 public class AppDbContext : DbContext
 {

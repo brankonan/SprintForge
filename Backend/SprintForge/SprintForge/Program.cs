@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SprintForge.Data;
-using SprintForge.Services;
+using Microsoft.EntityFrameworkCore;
+using SprintForge.Application.Interfaces;
+using SprintForge.Application.Services;
+using SprintForge.Infrastructure;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -18,8 +19,10 @@ namespace SprintForge
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // SERVICES
-            builder.Services.AddScoped<AuthService>();
-            builder.Services.AddScoped<JwtService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<ISprintService, SprintService>();
+            builder.Services.AddScoped<ISprintTaskService, SprintTaskService>();
 
             // AUTHENTICATION (JWT)
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -42,6 +45,17 @@ namespace SprintForge
                 });
 
             builder.Services.AddAuthorization();
+
+            // CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173", "https://localhost:5173", "http://localhost:5174", "https://localhost:5174")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             // CONTROLLERS
             builder.Services.AddControllers();
@@ -88,6 +102,8 @@ namespace SprintForge
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowFrontend");
 
             app.UseAuthentication();
             app.UseAuthorization();
