@@ -106,6 +106,7 @@ public class SprintTaskService : ISprintTaskService
             throw new UnauthorizedAccessException("You do not own this sprint");
 
         return await _context.SprintTasks
+            .Include(t => t.Artifacts)
             .Where(t => t.SprintId == sprintId)
             .OrderBy(t => t.Status)
             .ThenByDescending(t => t.Priority)

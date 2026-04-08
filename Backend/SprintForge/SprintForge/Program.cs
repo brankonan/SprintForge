@@ -23,6 +23,7 @@ namespace SprintForge
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<ISprintService, SprintService>();
             builder.Services.AddScoped<ISprintTaskService, SprintTaskService>();
+            builder.Services.AddScoped<IArtifactService, ArtifactService>();
 
             // AUTHENTICATION (JWT)
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -51,7 +52,7 @@ namespace SprintForge
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173", "https://localhost:5173", "http://localhost:5174", "https://localhost:5174")
+                    policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });

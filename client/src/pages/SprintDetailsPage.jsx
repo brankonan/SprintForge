@@ -40,6 +40,13 @@ export default function SprintDetailsPage() {
   const [editError, setEditError] = useState("");
   const [editSubmitting, setEditSubmitting] = useState(false);
 
+  // Artifacts
+  const [artifactTaskId, setArtifactTaskId] = useState(null);
+  const [artifactTitle, setArtifactTitle] = useState("");
+  const [artifactUrl, setArtifactUrl] = useState("");
+  const [artifactType, setArtifactType] = useState("Other");
+  const [artifactSubmitting, setArtifactSubmitting] = useState(false);
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
@@ -126,6 +133,57 @@ export default function SprintDetailsPage() {
   const cancelEditing = () => {
     setEditingTask(null);
     setEditError("");
+  };
+
+  const toggleArtifactForm = (taskId) => {
+    if (artifactTaskId === taskId) {
+      setArtifactTaskId(null);
+    } else {
+      setArtifactTaskId(taskId);
+      setArtifactTitle("");
+      setArtifactUrl("");
+      setArtifactType("Other");
+    }
+  };
+
+  const handleAddArtifact = async (e, taskId) => {
+    e.preventDefault();
+    setArtifactSubmitting(true);
+
+    try {
+      const { data } = await api.post(`/tasks/${taskId}/artifacts`, {
+        title: artifactTitle,
+        url: artifactUrl,
+        type: artifactType,
+      });
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId
+            ? { ...t, artifacts: [...(t.artifacts || []), data] }
+            : t
+        )
+      );
+      setArtifactTaskId(null);
+    } catch (err) {
+      console.error("Failed to add artifact", err);
+    } finally {
+      setArtifactSubmitting(false);
+    }
+  };
+
+  const handleDeleteArtifact = async (taskId, artifactId) => {
+    try {
+      await api.delete(`/artifacts/${artifactId}`);
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId
+            ? { ...t, artifacts: (t.artifacts || []).filter((a) => a.id !== artifactId) }
+            : t
+        )
+      );
+    } catch {
+      console.error("Failed to delete artifact");
+    }
   };
 
   const handleEditTask = async (e) => {
@@ -328,6 +386,63 @@ export default function SprintDetailsPage() {
                                 Due: {new Date(task.dueDate).toLocaleDateString()}
                               </p>
                             )}
+                            {task.artifacts && task.artifacts.length > 0 && (
+                              <div className="artifact-list">
+                                {task.artifacts.map((a) => (
+                                  <span key={a.id} className="artifact-pill">
+                                    <a href={a.url} target="_blank" rel="noopener noreferrer">
+                                      {a.title}
+                                    </a>
+                                    <button
+                                      className="artifact-delete"
+                                      onClick={() => handleDeleteArtifact(task.id, a.id)}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {artifactTaskId === task.id && (
+                              <form
+                                className="add-artifact-form"
+                                onSubmit={(e) => handleAddArtifact(e, task.id)}
+                              >
+                                <input
+                                  type="text"
+                                  placeholder="Title"
+                                  value={artifactTitle}
+                                  onChange={(e) => setArtifactTitle(e.target.value)}
+                                  maxLength={100}
+                                  required
+                                />
+                                <input
+                                  type="url"
+                                  placeholder="https://..."
+                                  value={artifactUrl}
+                                  onChange={(e) => setArtifactUrl(e.target.value)}
+                                  required
+                                />
+                                <select
+                                  value={artifactType}
+                                  onChange={(e) => setArtifactType(e.target.value)}
+                                >
+                                  <option value="GitHub">GitHub</option>
+                                  <option value="Website">Website</option>
+                                  <option value="Document">Document</option>
+                                  <option value="Other">Other</option>
+                                </select>
+                                <button
+                                  type="submit"
+                                  className="btn-primary"
+                                  disabled={artifactSubmitting}
+                                >
+                                  {artifactSubmitting ? "..." : "Add"}
+                                </button>
+                              </form>
+                            )}
+
                             <select
                               className="status-select"
                               value={task.status}
@@ -340,6 +455,12 @@ export default function SprintDetailsPage() {
                             <div className="task-actions">
                               <button className="btn-edit" onClick={() => startEditing(task)}>
                                 Edit
+                              </button>
+                              <button
+                                className="btn-edit"
+                                onClick={() => toggleArtifactForm(task.id)}
+                              >
+                                {artifactTaskId === task.id ? "Cancel" : "Add Link"}
                               </button>
                               <button className="btn-delete" onClick={() => handleDeleteTask(task.id)}>
                                 Delete

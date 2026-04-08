@@ -93,7 +93,15 @@ public class SprintTaskController : ControllerBase
             t.Status,
             t.Priority,
             t.DueDate,
-            t.SprintId
+            t.SprintId,
+            Artifacts = t.Artifacts.Select(a => new
+            {
+                a.Id,
+                a.Title,
+                a.Url,
+                a.Type,
+                a.Description
+            })
         });
 
         return Ok(result);
