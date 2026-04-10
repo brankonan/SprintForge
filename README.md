@@ -96,6 +96,7 @@ Open `http://localhost:5173`
 | POST | `/api/auth/register` | Create account |
 | POST | `/api/auth/login` | Login, returns JWT |
 | GET | `/api/auth/me` | Current user info |
+| PUT | `/api/auth/profile` | Update bio and portfolio visibility |
 
 ### Sprints
 
@@ -136,6 +137,6 @@ Open `http://localhost:5173`
 - [x] Task management with kanban board
 - [x] Artifact links on tasks
 - [x] Public explore and portfolio pages
-- [ ] User profile (bio, portfolio toggle)
+- [x] User profile (bio, portfolio toggle)
 - [ ] AI sprint suggestions
 - [ ] Mentor roles and feedback
