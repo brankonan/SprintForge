@@ -11,10 +11,12 @@ namespace SprintForge.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IProfileService _profileService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IProfileService profileService)
     {
         _authService = authService;
+        _profileService = profileService;
     }
 
     [HttpPost("register")]
@@ -33,19 +35,48 @@ public class AuthController : ControllerBase
 
     [HttpGet("me")]
     [Authorize]
-    public IActionResult Me()
+    public async Task<IActionResult> Me()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        var name = User.FindFirst(ClaimTypes.Name)?.Value;
-        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var user = await _profileService.GetProfile(userId);
 
         return Ok(new
         {
-            userId,
-            email,
-            name,
-            role
+            userId = user.Id,
+            email = user.Email,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            role = user.Role,
+            bio = user.Bio,
+            isPortfolioPublic = user.IsPortfolioPublic
         });
+    }
+
+    [HttpPut("profile")]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        try
+        {
+            var user = await _profileService.UpdateProfile(userId, dto);
+
+            return Ok(new
+            {
+                userId = user.Id,
+                email = user.Email,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                role = user.Role,
+                bio = user.Bio,
+                isPortfolioPublic = user.IsPortfolioPublic
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

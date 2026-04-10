@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import api from "../api/axios";
 
 const STATUS_COLUMNS = ["Todo", "InProgress", "Done"];
@@ -212,14 +213,7 @@ export default function SprintDetailsPage() {
 
   return (
     <div className="sprint-details-page">
-      <header className="dashboard-header">
-        <h1>
-          <Link to="/dashboard">SprintForge</Link>
-        </h1>
-        <Link to="/dashboard" className="btn-secondary">
-          Back to Dashboard
-        </Link>
-      </header>
+      <Navbar backLink="/dashboard" backLabel="Back to Dashboard" />
 
       <main className="sprint-details-content">
         <div className="section-header">

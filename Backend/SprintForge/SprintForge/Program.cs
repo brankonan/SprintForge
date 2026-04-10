@@ -24,6 +24,8 @@ namespace SprintForge
             builder.Services.AddScoped<ISprintService, SprintService>();
             builder.Services.AddScoped<ISprintTaskService, SprintTaskService>();
             builder.Services.AddScoped<IArtifactService, ArtifactService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
 
             // AUTHENTICATION (JWT)
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

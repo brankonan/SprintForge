@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import api from "../api/axios";
+
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -37,15 +39,7 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <header className="dashboard-header">
-        <h1>SprintForge</h1>
-        <div className="header-right">
-          <span>Welcome, {user?.firstName}</span>
-          <button className="btn-secondary" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="dashboard-content">
         <div className="section-header">

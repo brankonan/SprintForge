@@ -8,7 +8,7 @@ namespace SprintForge.Controllers;
 
 [ApiController]
 [Route("api/tasks/{taskId}/artifacts")]
-[Authorize]
+[Authorize(Roles = "Student")]
 public class ArtifactController : ControllerBase
 {
     private readonly IArtifactService _artifactService;

@@ -8,7 +8,7 @@ namespace SprintForge.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Student")]
 public class SprintController : ControllerBase
 {
     private readonly ISprintService _sprintService;
