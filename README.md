@@ -6,7 +6,8 @@ A sprint management and portfolio app built for student developers. Plan your wo
 
 SprintForge gives you a simple but complete development workflow:
 
-- Create sprints with a goal, description, and date range
+- Create, edit, and delete sprints with a goal, description, and date range
+- Track sprint status — mark sprints as **Planned**, **Active**, or **Completed**
 - Break sprints down into tasks with priorities (High / Medium / Low) and due dates
 - Move tasks through **To Do → In Progress → Done** on a kanban board
 - Attach links to each task — GitHub repos, deployed apps, documents
@@ -85,7 +86,7 @@ npm run dev
 
 Open `http://localhost:5173`
 
-> If using IIS Express, make sure the base URL in `client/src/api/axios.ts` matches your backend port.
+> The frontend reads the API URL from `VITE_API_URL` in `client/.env`. Copy `.env.example` to `.env` and adjust the port if needed.
 
 ## API overview
 
@@ -105,6 +106,9 @@ Open `http://localhost:5173`
 | POST | `/api/sprint` | Create sprint |
 | GET | `/api/sprint/my` | List my sprints |
 | GET | `/api/sprint/{id}/progress` | Sprint progress stats |
+| PUT | `/api/sprint/{id}` | Update sprint |
+| DELETE | `/api/sprint/{id}` | Delete sprint and its tasks |
+| PATCH | `/api/sprint/{id}/status` | Change sprint status |
 
 ### Tasks
 
@@ -133,7 +137,8 @@ Open `http://localhost:5173`
 ## Roadmap
 
 - [x] Auth (register, login, JWT)
-- [x] Sprint CRUD
+- [x] Sprint CRUD with status management
+- [x] Protected routes and frontend auth guards
 - [x] Task management with kanban board
 - [x] Artifact links on tasks
 - [x] Public explore and portfolio pages

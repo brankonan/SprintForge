@@ -68,4 +68,51 @@ public class SprintService : ISprintService
             .OrderByDescending(s => s.StartDate)
             .ToListAsync();
     }
+
+    public async Task<Sprint> UpdateSprint(Guid sprintId, UpdateSprintDto dto, Guid userId)
+    {
+        var sprint = await _context.Sprints.FirstOrDefaultAsync(s => s.Id == sprintId);
+        if (sprint == null)
+            throw new Exception("Sprint not found");
+        if (sprint.UserId != userId)
+            throw new UnauthorizedAccessException("You do not own this sprint");
+        if (dto.EndDate <= dto.StartDate)
+            throw new Exception("EndDate must be after StartDate");
+
+        sprint.Title = dto.Title;
+        sprint.Description = dto.Description;
+        sprint.Goal = dto.Goal;
+        sprint.StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
+        sprint.EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
+        await _context.SaveChangesAsync();
+        return sprint;
+    }
+
+    public async Task DeleteSprint(Guid sprintId, Guid userId)
+    {
+        var sprint = await _context.Sprints
+            .Include(s => s.Tasks)
+                .ThenInclude(t => t.Artifacts)
+            .FirstOrDefaultAsync(s => s.Id == sprintId);
+        if (sprint == null)
+            throw new Exception("Sprint not found");
+        if (sprint.UserId != userId)
+            throw new UnauthorizedAccessException("You do not own this sprint");
+
+        _context.Sprints.Remove(sprint);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Sprint> UpdateSprintStatus(Guid sprintId, string status, Guid userId)
+    {
+        var sprint = await _context.Sprints.FirstOrDefaultAsync(s => s.Id == sprintId);
+        if (sprint == null)
+            throw new Exception("Sprint not found");
+        if (sprint.UserId != userId)
+            throw new UnauthorizedAccessException("You do not own this sprint");
+
+        sprint.Status = status;
+        await _context.SaveChangesAsync();
+        return sprint;
+    }
 }

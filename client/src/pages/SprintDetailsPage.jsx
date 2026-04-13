@@ -114,6 +114,7 @@ export default function SprintDetailsPage() {
   };
 
   const handleDeleteTask = async (taskId) => {
+    if (!window.confirm("Are you sure you want to delete this task?")) return;
     try {
       await api.delete(`/tasks/${taskId}`);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
@@ -173,6 +174,7 @@ export default function SprintDetailsPage() {
   };
 
   const handleDeleteArtifact = async (taskId, artifactId) => {
+    if (!window.confirm("Remove this artifact link?")) return;
     try {
       await api.delete(`/artifacts/${artifactId}`);
       setTasks((prev) =>

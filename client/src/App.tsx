@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage";
 import CreateSprintPage from "./pages/CreateSprintPage";
 import SprintDetailsPage from "./pages/SprintDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -18,10 +19,10 @@ function App() {
         <Route path="/portfolio/:userId" element={<PortfolioPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/sprints/create" element={<CreateSprintPage />} />
-        <Route path="/sprints/:id" element={<SprintDetailsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/sprints/create" element={<ProtectedRoute><CreateSprintPage /></ProtectedRoute>} />
+        <Route path="/sprints/:id" element={<ProtectedRoute><SprintDetailsPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
