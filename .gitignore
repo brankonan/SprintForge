@@ -32,6 +32,3 @@ appsettings.Development.json
 # Docker
 docker-compose.override.yml
 
-# Claude Code
-.claude/
-CLAUDE.md
