@@ -1,0 +1,32 @@
+@use 'variables' as *;
+// ── Portfolio Page ──
+.portfolio-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $border;
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
+  }
+}
+
+.portfolio-role {
+  color: $primary;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+  font-family: $font-mono;
+}
+
+.portfolio-bio {
+  color: $text-muted;
+  font-size: 0.925rem;
+  line-height: 1.6;
+  max-width: 560px;
+}
+

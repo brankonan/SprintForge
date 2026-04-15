@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { userService } from "../services/userService";
 
 export default function ExplorePage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function ExplorePage() {
     try {
       const params = { limit: 20 };
       if (search.trim()) params.search = search.trim();
-      const { data } = await api.get("/user/explore", { params });
+      const data = await userService.explore(params);
       setUsers(data);
     } catch {
       console.error("Failed to fetch users");

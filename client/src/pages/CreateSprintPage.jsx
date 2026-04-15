@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { sprintService } from "../services/sprintService";
 
 export default function CreateSprintPage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function CreateSprintPage() {
     setLoading(true);
 
     try {
-      await api.post("/sprint", form);
+      await sprintService.create(form);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create sprint.");

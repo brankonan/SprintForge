@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import api from "../api/axios";
+import { userService } from "../services/userService";
+import { formatDate } from "../utils/formatDate";
 
 export default function PortfolioPage() {
   const { userId } = useParams();
@@ -16,7 +17,7 @@ export default function PortfolioPage() {
 
   const fetchPortfolio = async () => {
     try {
-      const { data } = await api.get(`/user/${userId}/portfolio`);
+      const data = await userService.getPortfolio(userId);
       setPortfolio(data);
     } catch (err) {
       setError(
@@ -87,11 +88,11 @@ export default function PortfolioPage() {
                     )}
                     <div className="sprint-dates">
                       <span>
-                        {new Date(sprint.startDate).toLocaleDateString()}
+                        {formatDate(sprint.startDate)}
                       </span>
                       <span> — </span>
                       <span>
-                        {new Date(sprint.endDate).toLocaleDateString()}
+                        {formatDate(sprint.endDate)}
                       </span>
                     </div>
                     <div className="progress-section">

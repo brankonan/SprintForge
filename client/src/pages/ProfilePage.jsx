@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import api from "../api/axios";
+import { authService } from "../services/authService";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const { data } = await api.get("/auth/me");
+      const data = await authService.getMe();
       setUser(data);
       setBio(data.bio || "");
       setIsPortfolioPublic(data.isPortfolioPublic || false);
@@ -41,7 +41,7 @@ export default function ProfilePage() {
     setSaving(true);
 
     try {
-      const { data } = await api.put("/auth/profile", { bio, isPortfolioPublic });
+      const data = await authService.updateProfile(bio, isPortfolioPublic);
       setUser(data);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);

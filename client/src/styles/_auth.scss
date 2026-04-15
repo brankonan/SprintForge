@@ -1,0 +1,120 @@
+@use 'variables' as *;
+// ── Auth Pages ──
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: $bg;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(249, 115, 22, 0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+}
+
+.auth-card {
+  background: $surface;
+  border: 1px solid $border-light;
+  border-radius: 20px;
+  padding: 2.75rem;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+
+  h1 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: $primary;
+    margin-bottom: 0.2rem;
+    letter-spacing: -0.01em;
+    font-family: $font-display;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.02em;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  input,
+  textarea {
+    background: $bg;
+    border: 1px solid $border-light;
+    border-radius: $radius-sm;
+    padding: 0.7rem 0.875rem;
+    font-size: 0.9375rem;
+    color: $text;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    resize: vertical;
+
+    &::placeholder {
+      color: rgba(107, 115, 148, 0.5);
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.error-message {
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  color: $error;
+  border-radius: $radius-sm;
+  padding: 0.7rem 0.875rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: $text-muted;
+
+  a {
+    color: $primary;
+    font-weight: 600;
+  }
+}
+

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import api from "../api/axios";
+import { sprintService } from "../services/sprintService";
+import { taskService } from "../services/taskService";
+import { artifactService } from "../services/artifactService";
+import { formatDate } from "../utils/formatDate";
 
 const STATUS_COLUMNS = ["Todo", "InProgress", "Done"];
 
@@ -59,7 +62,7 @@ export default function SprintDetailsPage() {
 
   const fetchTasks = async () => {
     try {
-      const { data } = await api.get(`/sprints/${id}/tasks`);
+      const data = await taskService.getBySprint(id);
       setTasks(data);
     } catch {
       console.error("Failed to fetch tasks");
@@ -70,7 +73,7 @@ export default function SprintDetailsPage() {
 
   const fetchProgress = async () => {
     try {
-      const { data } = await api.get(`/sprint/${id}/progress`);
+      const data = await sprintService.getProgress(id);
       setProgress(data);
     } catch {
       console.error("Failed to fetch progress");
@@ -86,7 +89,7 @@ export default function SprintDetailsPage() {
       const payload = { title, description: description || null, priority };
       if (dueDate) payload.dueDate = dueDate;
 
-      const { data } = await api.post(`/sprints/${id}/tasks`, payload);
+      const data = await taskService.create(id, payload);
       setTasks((prev) => [...prev, data]);
       fetchProgress();
       setTitle("");
@@ -103,7 +106,7 @@ export default function SprintDetailsPage() {
 
   const handleStatusChange = async (taskId, newStatus) => {
     try {
-      await api.patch(`/sprints/${id}/tasks/${taskId}/status`, { status: newStatus });
+      await taskService.updateStatus(id, taskId, newStatus);
       setTasks((prev) =>
         prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
       );
@@ -116,7 +119,7 @@ export default function SprintDetailsPage() {
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
     try {
-      await api.delete(`/tasks/${taskId}`);
+      await taskService.delete(taskId);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
       fetchProgress();
     } catch {
@@ -153,7 +156,7 @@ export default function SprintDetailsPage() {
     setArtifactSubmitting(true);
 
     try {
-      const { data } = await api.post(`/tasks/${taskId}/artifacts`, {
+      const data = await artifactService.create(taskId, {
         title: artifactTitle,
         url: artifactUrl,
         type: artifactType,
@@ -176,7 +179,7 @@ export default function SprintDetailsPage() {
   const handleDeleteArtifact = async (taskId, artifactId) => {
     if (!window.confirm("Remove this artifact link?")) return;
     try {
-      await api.delete(`/artifacts/${artifactId}`);
+      await artifactService.delete(artifactId);
       setTasks((prev) =>
         prev.map((t) =>
           t.id === taskId
@@ -195,7 +198,7 @@ export default function SprintDetailsPage() {
     setEditSubmitting(true);
 
     try {
-      const { data } = await api.put(`/tasks/${editingTask}`, {
+      const data = await taskService.update(editingTask, {
         title: editTitle,
         description: editDescription || null,
         priority: editPriority,
@@ -379,7 +382,7 @@ export default function SprintDetailsPage() {
                             )}
                             {task.dueDate && (
                               <p className="task-due">
-                                Due: {new Date(task.dueDate).toLocaleDateString()}
+                                Due: {formatDate(task.dueDate)}
                               </p>
                             )}
                             {task.artifacts && task.artifacts.length > 0 && (

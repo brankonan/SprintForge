@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import api from "../api/axios";
+import { sprintService } from "../services/sprintService";
+import { formatDate } from "../utils/formatDate";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function DashboardPage() {
 
   const fetchSprints = async () => {
     try {
-      const { data } = await api.get("/sprint/my");
+      const data = await sprintService.getMy();
       setSprints(data);
     } catch {
       console.error("Failed to fetch sprints");
@@ -46,7 +47,7 @@ export default function DashboardPage() {
     e.stopPropagation();
     if (!window.confirm("Delete this sprint? All tasks and artifacts will be permanently removed.")) return;
     try {
-      await api.delete(`/sprint/${sprintId}`);
+      await sprintService.delete(sprintId);
       setSprints((prev) => prev.filter((s) => s.id !== sprintId));
     } catch {
       console.error("Failed to delete sprint");
@@ -79,7 +80,7 @@ export default function DashboardPage() {
     setEditLoading(true);
 
     try {
-      const { data } = await api.put(`/sprint/${editingSprint}`, {
+      const data = await sprintService.update(editingSprint, {
         title: editForm.title,
         description: editForm.description || null,
         goal: editForm.goal || null,
@@ -100,7 +101,7 @@ export default function DashboardPage() {
   const handleStatusChange = async (sprintId, newStatus, e) => {
     e.stopPropagation();
     try {
-      await api.patch(`/sprint/${sprintId}/status`, { status: newStatus });
+      await sprintService.updateStatus(sprintId, newStatus);
       setSprints((prev) =>
         prev.map((s) => (s.id === sprintId ? { ...s, status: newStatus } : s))
       );
@@ -203,9 +204,9 @@ export default function DashboardPage() {
                     {sprint.goal && <p className="sprint-goal">{sprint.goal}</p>}
                     {sprint.description && <p className="sprint-desc">{sprint.description}</p>}
                     <div className="sprint-dates">
-                      <span>{new Date(sprint.startDate).toLocaleDateString()}</span>
+                      <span>{formatDate(sprint.startDate)}</span>
                       <span> — </span>
-                      <span>{new Date(sprint.endDate).toLocaleDateString()}</span>
+                      <span>{formatDate(sprint.endDate)}</span>
                     </div>
                     <div className="sprint-card-actions">
                       <select

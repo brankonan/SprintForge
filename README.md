@@ -40,8 +40,10 @@ SprintForge/
 └── client/src/
     ├── pages/                  # React pages
     ├── components/             # Shared components
-    ├── api/                    # Axios instance + JWT interceptor
-    └── styles/                 # Global SCSS
+    ├── api/                    # Axios instance + JWT interceptor (401 auto-redirect)
+    ├── services/               # API service layer (auth, sprint, task, artifact, user)
+    ├── utils/                  # Shared utilities (formatDate, etc.)
+    └── styles/                 # SCSS split into partials (_variables, _base, _auth, etc.)
 ```
 
 ## Getting started

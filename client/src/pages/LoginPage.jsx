@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { authService } from "../services/authService";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const { data } = await api.post("/auth/login", form);
+      const data = await authService.login(form.email, form.password);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/dashboard");
