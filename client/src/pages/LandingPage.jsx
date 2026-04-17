@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 
-// ── Ticker items ──────────────────────────────────────────────────────────────
 const TICKER_ITEMS = [
   "Sprint Planning", "Kanban Boards", "Task Tracking",
   "Portfolio Proof", "Progress Analytics", "Artifact Management",
   "No Standups Required", "Just Ship It",
 ];
 
-// ── Engineering specs ─────────────────────────────────────────────────────────
 const SPECS = [
   { key: "KANBAN_BOARD",       val: "TRUE" },
   { key: "TASK_PRIORITIES",    val: "HIGH | MEDIUM | LOW" },
@@ -20,7 +18,6 @@ const SPECS = [
   { key: "PRICE",              val: "$0 / MONTH" },
 ];
 
-// ── Features ──────────────────────────────────────────────────────────────────
 const FEATURES = [
   {
     num: "01",
@@ -48,7 +45,6 @@ const FEATURES = [
   },
 ];
 
-// ── Showcase tabs ─────────────────────────────────────────────────────────────
 const TABS = [
   {
     id: "plan",
@@ -70,9 +66,6 @@ const TABS = [
   },
 ];
 
-// ────────────────────────────────────────────────────────────────────────────
-// Nav
-// ────────────────────────────────────────────────────────────────────────────
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -122,9 +115,6 @@ function Nav() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Hero
-// ────────────────────────────────────────────────────────────────────────────
 function Hero() {
   const [in_, setIn] = useState(false);
   useEffect(() => { const t = setTimeout(() => setIn(true), 80); return () => clearTimeout(t); }, []);
@@ -136,7 +126,6 @@ function Hero() {
       <div className="sfh__glow" />
 
       <div className="sfh__inner">
-        {/* Left column */}
         <div className="sfh__left">
           <p className="sfh__eyebrow">
             <span className="sfh__eyebrow-dot" />
@@ -179,7 +168,6 @@ function Hero() {
           </ul>
         </div>
 
-        {/* Right column — kanban board */}
         <div className="sfh__right">
           <div className="sfh__board-aura" />
           <div className="sfh__board">
@@ -247,9 +235,6 @@ function Hero() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Ticker
-// ────────────────────────────────────────────────────────────────────────────
 function Ticker() {
   return (
     <div className="sft">
@@ -265,9 +250,6 @@ function Ticker() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Spec Sheet
-// ────────────────────────────────────────────────────────────────────────────
 function SpecSheet() {
   return (
     <section className="sfspec">
@@ -290,9 +272,6 @@ function SpecSheet() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Features
-// ────────────────────────────────────────────────────────────────────────────
 function Features() {
   return (
     <section className="sff" id="features">
@@ -322,9 +301,6 @@ function Features() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Showcase mocks
-// ────────────────────────────────────────────────────────────────────────────
 function MockPlan() {
   return (
     <div className="sfm sfm--plan">
@@ -408,9 +384,6 @@ function MockShip() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Showcase
-// ────────────────────────────────────────────────────────────────────────────
 function Showcase() {
   const [active, setActive] = useState("plan");
   const [auto, setAuto] = useState(true);
@@ -462,9 +435,6 @@ function Showcase() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// CTA  (full bleed inversion — orange bg, black text)
-// ────────────────────────────────────────────────────────────────────────────
 function CTA() {
   return (
     <section className="sfcta">
@@ -492,9 +462,6 @@ function CTA() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Footer
-// ────────────────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer className="sffoot">
@@ -514,9 +481,6 @@ function Footer() {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Root
-// ────────────────────────────────────────────────────────────────────────────
 export default function LandingPage() {
   return (
     <div className="sf-land">

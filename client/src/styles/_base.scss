@@ -1,5 +1,5 @@
 @use 'variables' as *;
-// ── Reset ──
+// Reset
 *,
 *::before,
 *::after {
@@ -27,7 +27,7 @@ a {
 }
 
 
-// ── Buttons ──
+// Buttons
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -86,7 +86,7 @@ a {
 }
 
 
-// ── Select (shared) ──
+// Select
 select {
   background: $bg;
   border: 1px solid $border-light;

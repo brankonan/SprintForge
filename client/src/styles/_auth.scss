@@ -1,5 +1,472 @@
 @use 'variables' as *;
-// ── Auth Pages ──
+
+// Fonts
+$sfa-display: 'Bebas Neue', sans-serif;
+$sfa-heading: 'Barlow Condensed', sans-serif;
+$sfa-body:    'Barlow', sans-serif;
+$sfa-mono:    'IBM Plex Mono', monospace;
+
+// Keyframes
+@keyframes sfa-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sfa-slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes sfa-pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.8; transform: scale(1.06); }
+}
+@keyframes sfa-loading-dot {
+  0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+@keyframes sfa-line-in {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+// Layout
+.sfa-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: $bg;
+  color: $text;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Brand panel
+.sfa-brand {
+  position: relative;
+  background: #050507;
+  border-right: 1px solid $border;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+
+  @media (max-width: 860px) {
+    display: none;
+  }
+}
+
+// Background layers
+.sfa-brand__noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+.sfa-brand__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%);
+  pointer-events: none;
+}
+
+.sfa-brand__glow {
+  position: absolute;
+  bottom: -100px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(249, 115, 22, 0.13) 0%, transparent 65%);
+  pointer-events: none;
+  animation: sfa-pulse-glow 6s ease-in-out infinite;
+}
+
+.sfa-brand__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 2.75rem;
+  width: 100%;
+}
+
+// Logo
+.sfa-brand__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: $sfa-heading;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: $text;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+
+  &:hover { color: $primary; text-decoration: none; }
+}
+
+.sfa-brand__hex {
+  color: $primary;
+  font-size: 1rem;
+  filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6));
+}
+
+// Headline
+.sfa-brand__headline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: auto 0;
+  padding: 2rem 0;
+}
+
+.sfa-brand__word {
+  font-family: $sfa-display;
+  font-size: clamp(4.5rem, 8vw, 7.5rem);
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+  display: block;
+
+  &--outline {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(240, 242, 248, 0.55);
+  }
+
+  &--fill {
+    color: $primary;
+    text-shadow: 0 0 80px rgba(249, 115, 22, 0.35);
+  }
+}
+
+.sfa-brand__rule {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, $primary, transparent);
+  margin: 0.3rem 0;
+  opacity: 0.7;
+}
+
+.sfa-brand__sub {
+  font-family: $sfa-mono;
+  font-size: 0.82rem;
+  color: $text-muted;
+  line-height: 1.75;
+  margin-top: 1.25rem;
+}
+
+// Spec list
+.sfa-brand__specs {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(249, 115, 22, 0.3);
+  padding-top: 1.25rem;
+}
+
+.sfa-brand__spec-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid $border;
+  transition: background 0.2s;
+  border-radius: 4px;
+
+  &:hover {
+    .sfa-brand__spec-key { color: $primary; }
+  }
+}
+
+.sfa-brand__spec-key {
+  font-family: $sfa-mono;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.sfa-brand__spec-dots {
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    $border 0, $border 3px, transparent 3px, transparent 7px
+  );
+}
+
+.sfa-brand__spec-val {
+  font-family: $sfa-mono;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: $text;
+  text-align: right;
+  white-space: nowrap;
+}
+
+// Form panel
+.sfa-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: $surface;
+}
+
+.sfa-panel__inner {
+  width: 100%;
+  max-width: 420px;
+  animation: sfa-up 0.5s ease both;
+}
+
+// Header
+.sfa-panel__head {
+  margin-bottom: 2.5rem;
+}
+
+.sfa-panel__eyebrow {
+  font-family: $sfa-mono;
+  font-size: 0.68rem;
+  color: $primary;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.sfa-panel__title {
+  font-family: $sfa-heading;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: $text;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin-bottom: 0.625rem;
+}
+
+.sfa-panel__sub {
+  font-family: $sfa-mono;
+  font-size: 0.75rem;
+  color: $text-muted;
+  line-height: 1.65;
+}
+
+// Error
+.sfa-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(244, 63, 94, 0.07);
+  border: 1px solid rgba(244, 63, 94, 0.22);
+  border-left: 3px solid $error;
+  border-radius: 6px;
+  padding: 0.7rem 0.875rem;
+  font-family: $sfa-mono;
+  font-size: 0.75rem;
+  color: $error;
+  margin-bottom: 1.5rem;
+  animation: sfa-slide-in 0.3s ease both;
+}
+
+.sfa-error__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(244, 63, 94, 0.15);
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+// Form
+.sfa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.sfa-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+// Floating label input
+.sfa-field {
+  position: relative;
+  margin-bottom: 1.5rem;
+
+  input {
+    width: 100%;
+    background: $surface-2;
+    border: 1px solid $border-light;
+    border-radius: 8px;
+    padding: 1.35rem 0.875rem 0.5rem;
+    font-family: $sfa-body;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $text;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &::placeholder { color: transparent; }
+
+    // Float label when focused or filled
+    &:focus ~ label,
+    &:not(:placeholder-shown) ~ label {
+      transform: translateY(-0.9rem) scale(0.7);
+      color: $primary;
+      letter-spacing: 0.06em;
+      left: 0.875rem;
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    &:focus ~ .sfa-field__line {
+      width: calc(100% - 1.75rem);
+    }
+
+    // Override browser autofill background
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px $surface-2 inset !important;
+      -webkit-text-fill-color: $text !important;
+      caret-color: $text;
+      border-color: $border-light;
+      transition: background-color 9999s ease-in-out 0s;
+    }
+  }
+
+  label {
+    position: absolute;
+    top: 50%;
+    left: 0.875rem;
+    transform: translateY(-50%);
+    font-family: $sfa-mono;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: $text-muted;
+    pointer-events: none;
+    transform-origin: left center;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), color 0.22s, letter-spacing 0.22s;
+    white-space: nowrap;
+  }
+}
+
+// Animated underline
+.sfa-field__line {
+  position: absolute;
+  bottom: 2px;
+  left: 0.875rem;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, $primary, $accent);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+// Filled state
+.sfa-field--filled {
+  input:not(:focus) ~ label {
+    color: rgba(249, 115, 22, 0.55);
+    transform: translateY(-0.9rem) scale(0.7);
+    left: 0.875rem;
+    letter-spacing: 0.06em;
+  }
+}
+
+// Submit button
+.sfa-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  background: $primary;
+  color: #000;
+  font-family: $sfa-heading;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  border: none;
+  border-radius: 7px;
+  padding: 0.875rem 1.75rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+
+  &:hover:not(:disabled) {
+    background: $primary-hover;
+    box-shadow: 0 6px 32px rgba(249, 115, 22, 0.35);
+    transform: translateY(-1px);
+
+    svg { transform: translateX(4px); }
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  svg { transition: transform 0.2s; }
+}
+
+// Loading dots inside button
+.sfa-submit__dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  span {
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    animation: sfa-loading-dot 1.2s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+  }
+}
+
+// Switch link
+.sfa-switch {
+  text-align: center;
+  font-family: $sfa-mono;
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.sfa-switch__link {
+  color: $primary;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover { color: $primary-hover; text-decoration: none; }
+}
+
+// Legacy
 .auth-page {
   display: flex;
   align-items: center;
@@ -78,9 +545,7 @@
     font-family: inherit;
     resize: vertical;
 
-    &::placeholder {
-      color: rgba(107, 115, 148, 0.5);
-    }
+    &::placeholder { color: rgba(107, 115, 148, 0.5); }
 
     &:focus {
       border-color: $primary;
@@ -117,4 +582,3 @@
     font-weight: 600;
   }
 }
-

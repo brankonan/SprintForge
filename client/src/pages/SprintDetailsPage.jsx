@@ -27,7 +27,6 @@ export default function SprintDetailsPage() {
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Add task form
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -36,7 +35,6 @@ export default function SprintDetailsPage() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Edit task
   const [editingTask, setEditingTask] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -44,7 +42,6 @@ export default function SprintDetailsPage() {
   const [editError, setEditError] = useState("");
   const [editSubmitting, setEditSubmitting] = useState(false);
 
-  // Artifacts
   const [artifactTaskId, setArtifactTaskId] = useState(null);
   const [artifactTitle, setArtifactTitle] = useState("");
   const [artifactUrl, setArtifactUrl] = useState("");

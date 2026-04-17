@@ -1,19 +1,19 @@
 @use 'variables' as *;
 
-// ── Landing-scoped font aliases ───────────────────────────────────────────────
+// Fonts
 $ld-display:  'Bebas Neue', sans-serif;
 $ld-heading:  'Barlow Condensed', sans-serif;
 $ld-body:     'Barlow', sans-serif;
 $ld-mono:     'IBM Plex Mono', monospace;
 
-// Forge orange — slightly more vivid than app primary for landing punch
+// Landing color overrides
 $forge:       #FF5C00;
 $forge-dim:   #CC4900;
 $forge-glow:  rgba(255, 92, 0, 0.18);
 $forge-lime:  #C8FF00;   // electric lime — used ONLY for "done" state
 $forge-gold:  #FFD45C;   // warm gold accent
 
-// ── Keyframes ────────────────────────────────────────────────────────────────
+// Keyframes
 @keyframes sf-up {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -47,7 +47,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   100% { height: 48px; opacity: 1; }
 }
 
-// ── Root wrapper ──────────────────────────────────────────────────────────────
+// Root wrapper
 .sf-land {
   background: #060608;
   color: $text;
@@ -55,9 +55,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   overflow-x: hidden;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // NAV
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sfn {
   position: fixed;
   inset: 0 0 auto 0;
@@ -170,9 +168,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   .sfn__cta:hover & { transform: translate(2px, -2px); }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // HERO
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sfh {
   position: relative;
   min-height: 100vh;
@@ -182,7 +178,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   overflow: hidden;
 }
 
-// Atmosphere layers
+// Background layers
 .sfh__noise {
   position: absolute;
   inset: 0;
@@ -379,7 +375,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   }
 }
 
-// Stat list styled like engineering specs
+// Stat list
 .sfh__specs {
   list-style: none;
   display: flex;
@@ -429,7 +425,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   letter-spacing: 0.12em;
 }
 
-// Right column — board
+// Board preview
 .sfh__right {
   position: relative;
   display: flex;
@@ -645,9 +641,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   animation: sf-scroll-bob 1.8s ease-in-out infinite alternate;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // TICKER
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sft {
   overflow: hidden;
   border-top: 1px solid $border;
@@ -685,9 +679,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   vertical-align: middle;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SPEC SHEET
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sfspec {
   padding: 5rem 0;
   border-bottom: 1px solid $border;
@@ -773,9 +765,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   text-align: right;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FEATURES
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sff {
   padding: 6rem 0;
 }
@@ -908,9 +898,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // SHOWCASE
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sfs {
   padding: 0 0 7rem;
 }
@@ -1032,7 +1020,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   animation: sf-in 0.35s 0.05s ease both;
 }
 
-// ── Mocks ─────────────────────────────────────────────────────────────────────
+// Mocks
 .sfm {
   width: 100%;
   max-width: 420px;
@@ -1079,7 +1067,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   letter-spacing: 0.07em;
 }
 
-// Plan mock — JSON-style
+// Plan mock
 .sfm__body { padding: 0.875rem 1rem; }
 
 .sfm__line {
@@ -1130,7 +1118,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   &:hover { background: $forge-dim; }
 }
 
-// Build mock — columns
+// Build mock
 .sfm__cols {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1170,7 +1158,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   &:hover { border-color: $border-light; }
 }
 
-// Ship mock — profile
+// Ship mock
 .sfm__profile {
   display: flex;
   align-items: center;
@@ -1256,9 +1244,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   font-weight: 600;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// CTA — FULL BLEED INVERSION (orange background)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CTA
 .sfcta {
   position: relative;
   overflow: hidden;
@@ -1364,9 +1350,7 @@ $forge-gold:  #FFD45C;   // warm gold accent
   &:hover { color: #000; text-decoration: none; }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FOOTER
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 .sffoot {
   padding: 2.25rem 0;
   border-top: 1px solid $border;
