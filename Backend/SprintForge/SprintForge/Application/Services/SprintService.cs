@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SprintForge.Application.Interfaces;
 using SprintForge.Domain.Entities;
 using SprintForge.Dtos;
+using SprintForge.Exceptions;
 using SprintForge.Infrastructure;
 
 namespace SprintForge.Application.Services;
@@ -9,10 +10,12 @@ namespace SprintForge.Application.Services;
 public class SprintService : ISprintService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<SprintService> _logger;
 
-    public SprintService(AppDbContext context)
+    public SprintService(AppDbContext context, ILogger<SprintService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<Sprint> CreateSprint(CreateSprintDto dto, Guid userId)
@@ -35,6 +38,7 @@ public class SprintService : ISprintService
         _context.Sprints.Add(sprint);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation("Sprint {SprintId} created by user {UserId}", sprint.Id, userId);
         return sprint;
     }
 
@@ -43,10 +47,16 @@ public class SprintService : ISprintService
         var sprint = await _context.Sprints.FirstOrDefaultAsync(s => s.Id == sprintId);
 
         if (sprint == null)
-            throw new Exception("Sprint not found");
+        {
+            _logger.LogWarning("Sprint {SprintId} not found", sprintId);
+            throw new NotFoundException("Sprint not found");
+        }
 
         if (sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to access sprint {SprintId} owned by {OwnerId}", userId, sprintId, sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         var tasks = await _context.SprintTasks
             .Where(t => t.SprintId == sprintId)
@@ -72,10 +82,19 @@ public class SprintService : ISprintService
     public async Task<Sprint> UpdateSprint(Guid sprintId, UpdateSprintDto dto, Guid userId)
     {
         var sprint = await _context.Sprints.FirstOrDefaultAsync(s => s.Id == sprintId);
+
         if (sprint == null)
-            throw new Exception("Sprint not found");
+        {
+            _logger.LogWarning("Sprint {SprintId} not found", sprintId);
+            throw new NotFoundException("Sprint not found");
+        }
+
         if (sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to update sprint {SprintId} owned by {OwnerId}", userId, sprintId, sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
+
         if (dto.EndDate <= dto.StartDate)
             throw new Exception("EndDate must be after StartDate");
 
@@ -85,6 +104,8 @@ public class SprintService : ISprintService
         sprint.StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
         sprint.EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Sprint {SprintId} updated by user {UserId}", sprintId, userId);
         return sprint;
     }
 
@@ -94,25 +115,45 @@ public class SprintService : ISprintService
             .Include(s => s.Tasks)
                 .ThenInclude(t => t.Artifacts)
             .FirstOrDefaultAsync(s => s.Id == sprintId);
+
         if (sprint == null)
-            throw new Exception("Sprint not found");
+        {
+            _logger.LogWarning("Sprint {SprintId} not found", sprintId);
+            throw new NotFoundException("Sprint not found");
+        }
+
         if (sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to delete sprint {SprintId} owned by {OwnerId}", userId, sprintId, sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         _context.Sprints.Remove(sprint);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Sprint {SprintId} deleted by user {UserId}", sprintId, userId);
     }
 
     public async Task<Sprint> UpdateSprintStatus(Guid sprintId, string status, Guid userId)
     {
         var sprint = await _context.Sprints.FirstOrDefaultAsync(s => s.Id == sprintId);
+
         if (sprint == null)
-            throw new Exception("Sprint not found");
+        {
+            _logger.LogWarning("Sprint {SprintId} not found", sprintId);
+            throw new NotFoundException("Sprint not found");
+        }
+
         if (sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to update status of sprint {SprintId} owned by {OwnerId}", userId, sprintId, sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         sprint.Status = status;
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Sprint {SprintId} status changed to {Status} by user {UserId}", sprintId, status, userId);
         return sprint;
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SprintForge.Application.Interfaces;
 using SprintForge.Domain.Entities;
 using SprintForge.Dtos;
+using SprintForge.Exceptions;
 using SprintForge.Infrastructure;
 
 namespace SprintForge.Application.Services;
@@ -9,10 +10,12 @@ namespace SprintForge.Application.Services;
 public class ArtifactService : IArtifactService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<ArtifactService> _logger;
 
-    public ArtifactService(AppDbContext context)
+    public ArtifactService(AppDbContext context, ILogger<ArtifactService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<Artifact> CreateArtifact(Guid taskId, CreateArtifactDto dto, Guid userId)
@@ -22,10 +25,16 @@ public class ArtifactService : IArtifactService
             .FirstOrDefaultAsync(t => t.Id == taskId);
 
         if (task == null)
-            throw new Exception("Task not found");
+        {
+            _logger.LogWarning("Task {TaskId} not found when creating artifact", taskId);
+            throw new NotFoundException("Task not found");
+        }
 
         if (task.Sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to add artifact to task {TaskId} owned by {OwnerId}", userId, taskId, task.Sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         var artifact = new Artifact
         {
@@ -40,6 +49,7 @@ public class ArtifactService : IArtifactService
         _context.Artifacts.Add(artifact);
         await _context.SaveChangesAsync();
 
+        _logger.LogInformation("Artifact {ArtifactId} created for task {TaskId} by user {UserId}", artifact.Id, taskId, userId);
         return artifact;
     }
 
@@ -50,10 +60,16 @@ public class ArtifactService : IArtifactService
             .FirstOrDefaultAsync(t => t.Id == taskId);
 
         if (task == null)
-            throw new Exception("Task not found");
+        {
+            _logger.LogWarning("Task {TaskId} not found", taskId);
+            throw new NotFoundException("Task not found");
+        }
 
         if (task.Sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to get artifacts for task {TaskId} owned by {OwnerId}", userId, taskId, task.Sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         return await _context.Artifacts
             .Where(a => a.SprintTaskId == taskId)
@@ -69,12 +85,20 @@ public class ArtifactService : IArtifactService
             .FirstOrDefaultAsync(a => a.Id == artifactId);
 
         if (artifact == null)
-            throw new Exception("Artifact not found");
+        {
+            _logger.LogWarning("Artifact {ArtifactId} not found", artifactId);
+            throw new NotFoundException("Artifact not found");
+        }
 
         if (artifact.SprintTask.Sprint.UserId != userId)
-            throw new UnauthorizedAccessException("You do not own this sprint");
+        {
+            _logger.LogWarning("User {UserId} tried to delete artifact {ArtifactId} owned by {OwnerId}", userId, artifactId, artifact.SprintTask.Sprint.UserId);
+            throw new ForbiddenException("You do not own this sprint");
+        }
 
         _context.Artifacts.Remove(artifact);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Artifact {ArtifactId} deleted by user {UserId}", artifactId, userId);
     }
 }

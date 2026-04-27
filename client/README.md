@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# SprintForge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sprint tracker built for developers. Kanban board, sprint progress tracking, artifact links, and a public portfolio page — no standups required.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Backend** — .NET 8, ASP.NET Core, EF Core, PostgreSQL, JWT  
+**Frontend** — React 19, TypeScript, Vite, Axios, SCSS
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- JWT authentication with role-based authorization
+- Sprint management (create, update, delete, status tracking)
+- Kanban board with task priority and due dates
+- Artifact links per task (GitHub, docs, websites)
+- Sprint progress bar with live percentage
+- Profile page with bio and public portfolio toggle
+- Public portfolio page at `/portfolio/:userId`
 
-## Expanding the ESLint configuration
+## Architecture
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```
+Backend/
+  Controllers/     → thin, no try-catch, no manual mapping
+  Application/
+    Services/      → business logic + ILogger
+    Interfaces/    → contracts
+  Domain/Entities/ → EF Core models
+  Dtos/            → request + response DTOs
+  Mappings/        → AutoMapper profiles
+  Middleware/      → global exception handler
+  Exceptions/      → NotFoundException, ForbiddenException
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+client/src/
+  pages/           → React pages
+  components/      → Navbar, shared UI
+  services/        → axios API calls
+  styles/          → SCSS partials (@use module system)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Running locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Backend**
+```bash
+cd Backend/SprintForge/SprintForge
+dotnet run
 ```
+
+**Frontend**
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Frontend runs on `http://localhost:5173`, backend on `https://localhost:7xxx`.

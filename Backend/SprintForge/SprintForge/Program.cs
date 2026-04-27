@@ -1,7 +1,10 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SprintForge.Application.Interfaces;
 using SprintForge.Application.Services;
 using SprintForge.Infrastructure;
+using SprintForge.Mappings;
+using SprintForge.Middleware;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -60,6 +63,9 @@ namespace SprintForge
                 });
             });
 
+            // AUTOMAPPER
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             // CONTROLLERS
             builder.Services.AddControllers();
 
@@ -103,6 +109,8 @@ namespace SprintForge
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
