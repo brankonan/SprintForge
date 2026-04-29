@@ -17,6 +17,12 @@ export default function CreateSprintPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (form.endDate && form.startDate && form.endDate <= form.startDate) {
+      setError("End date must be after start date.");
+      return;
+    }
+
     setLoading(true);
 
     try {

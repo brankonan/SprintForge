@@ -6,4 +6,7 @@ export const userService = {
 
   getPortfolio: (userId) =>
     api.get(`/user/${userId}/portfolio`).then((r) => r.data),
+
+  getStats: () =>
+    api.get("/user/stats").then((r) => r.data),
 };

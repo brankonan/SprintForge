@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SprintForge.Application.Interfaces;
+using System.Security.Claims;
 
 namespace SprintForge.Controllers;
 
@@ -30,5 +32,14 @@ public class UserController : ControllerBase
             return NotFound(new { message = "Portfolio is private or user not found." });
 
         return Ok(portfolio);
+    }
+
+    [HttpGet("stats")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetStats()
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var stats = await _userService.GetUserStats(userId);
+        return Ok(stats);
     }
 }

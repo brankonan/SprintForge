@@ -1,10 +1,15 @@
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using SprintForge.Application.Interfaces;
 using SprintForge.Application.Services;
 using SprintForge.Infrastructure;
 using SprintForge.Mappings;
 using SprintForge.Middleware;
+using SprintForge.Validators;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +20,14 @@ namespace SprintForge
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .WriteTo.File("logs/sprintforge-.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
 
             // DATABASE
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -65,6 +77,21 @@ namespace SprintForge
 
             // AUTOMAPPER
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            // FLUENTVALIDATION
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var message = string.Join(" ", context.ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage));
+                    return new BadRequestObjectResult(new { message });
+                };
+            });
 
             // CONTROLLERS
             builder.Services.AddControllers();
@@ -122,6 +149,7 @@ namespace SprintForge
             app.MapControllers();
 
             app.Run();
+            Log.CloseAndFlush();
         }
     }
 }

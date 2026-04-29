@@ -1,47 +1,27 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { authService } from "../services/authService";
-
-function Field({ id, label, type = "text", value, onChange, required, autoComplete }) {
-  return (
-    <div className={`sfa-field ${value ? "sfa-field--filled" : ""}`}>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder=" "
-        required={required}
-        autoComplete={autoComplete}
-      />
-      <label htmlFor={id}>{label}</label>
-      <div className="sfa-field__line" />
-    </div>
-  );
-}
+import AuthField from "../components/AuthField";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    setServerError("");
     try {
-      await authService.register(form.firstName, form.lastName, form.email, form.password);
+      await authService.register(data.firstName, data.lastName, data.email, data.password);
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
-    } finally {
-      setLoading(false);
+      setServerError(err.response?.data?.message || "Registration failed. Please try again.");
     }
   };
 
@@ -94,54 +74,57 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {error && (
+          {serverError && (
             <div className="sfa-error">
               <span className="sfa-error__icon">!</span>
-              {error}
+              {serverError}
             </div>
           )}
 
-          <form className="sfa-form" onSubmit={handleSubmit}>
+          <form className="sfa-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="sfa-form__row">
-              <Field
+              <AuthField
                 id="firstName"
                 label="First name"
-                value={form.firstName}
-                onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                required
+                filled={!!watch("firstName")}
+                registration={register("firstName", { required: "First name is required" })}
+                error={errors.firstName?.message}
                 autoComplete="given-name"
               />
-              <Field
+              <AuthField
                 id="lastName"
                 label="Last name"
-                value={form.lastName}
-                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                required
+                filled={!!watch("lastName")}
+                registration={register("lastName", { required: "Last name is required" })}
+                error={errors.lastName?.message}
                 autoComplete="family-name"
               />
             </div>
 
-            <Field
+            <AuthField
               id="email"
               label="Email address"
               type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
+              filled={!!watch("email")}
+              registration={register("email", { required: "Email is required" })}
+              error={errors.email?.message}
               autoComplete="email"
             />
-            <Field
+            <AuthField
               id="password"
               label="Password"
               type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              required
+              filled={!!watch("password")}
+              registration={register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
+              error={errors.password?.message}
               autoComplete="new-password"
             />
 
-            <button type="submit" className="sfa-submit" disabled={loading}>
-              {loading ? (
+            <button type="submit" className="sfa-submit" disabled={isSubmitting}>
+              {isSubmitting ? (
                 <span className="sfa-submit__dots">
                   <span /><span /><span />
                 </span>

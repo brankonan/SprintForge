@@ -42,6 +42,28 @@ public class UserService : IUserService
             .ToListAsync();
     }
 
+    public async Task<UserStatsDto> GetUserStats(Guid userId)
+    {
+        var sprints = await _context.Sprints
+            .Where(s => s.UserId == userId)
+            .Include(s => s.Tasks)
+            .ToListAsync();
+
+        var totalTasks = sprints.Sum(s => s.Tasks.Count);
+        var doneTasks = sprints.Sum(s => s.Tasks.Count(t => t.Status == "Done"));
+
+        return new UserStatsDto
+        {
+            TotalSprints = sprints.Count,
+            ActiveSprints = sprints.Count(s => s.Status == "Active"),
+            CompletedSprints = sprints.Count(s => s.Status == "Completed"),
+            PlannedSprints = sprints.Count(s => s.Status == "Planned"),
+            TotalTasks = totalTasks,
+            DoneTasks = doneTasks,
+            CompletionRate = totalTasks == 0 ? 0 : (int)Math.Round((double)doneTasks / totalTasks * 100)
+        };
+    }
+
     public async Task<PublicPortfolioDto?> GetPublicPortfolio(Guid userId)
     {
         var user = await _context.Users

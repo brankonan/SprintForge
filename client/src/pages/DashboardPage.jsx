@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { sprintService } from "../services/sprintService";
+import { userService } from "../services/userService";
 import { formatDate } from "../utils/formatDate";
 
 const Icons = {
@@ -162,11 +163,11 @@ function StatPill({ label, value, accent }) {
 }
 
 function CommandPanel({ sprint, progress, onOpen }) {
-  const pct = progress?.completionPercentage ?? 0;
+  const pct = progress?.percentage ?? 0;
   const todo = progress?.todo ?? 0;
   const inProg = progress?.inProgress ?? 0;
-  const done = progress?.completed ?? 0;
-  const total = progress?.totalTasks ?? 0;
+  const done = progress?.done ?? 0;
+  const total = progress?.total ?? 0;
 
   const segTodo = total > 0 ? (todo / total) * 100 : 0;
   const segProg = total > 0 ? (inProg / total) * 100 : 0;
@@ -402,6 +403,7 @@ export default function DashboardPage() {
   const [sprints, setSprints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeProgress, setActiveProgress] = useState(null);
+  const [userStats, setUserStats] = useState(null);
 
   const [editingSprint, setEditingSprint] = useState(null);
   const [editForm, setEditForm] = useState({ title: "", description: "", goal: "", startDate: "", endDate: "" });
@@ -413,6 +415,7 @@ export default function DashboardPage() {
     if (!stored) { navigate("/login"); return; }
     setUser(JSON.parse(stored));
     fetchSprints();
+    userService.getStats().then(setUserStats).catch((err) => console.error("Failed to load stats:", err));
   }, [navigate]);
 
   const fetchSprints = async () => {
@@ -520,7 +523,8 @@ export default function DashboardPage() {
             <StatPill label="Total sprints" value={stats.total} />
             <StatPill label="Active"        value={stats.active}    accent />
             <StatPill label="Completed"     value={stats.completed} />
-            <StatPill label="Planned"       value={stats.planned} />
+            <StatPill label="Tasks done"    value={userStats ? `${userStats.doneTasks}/${userStats.totalTasks}` : "—"} />
+            <StatPill label="Completion"    value={userStats ? `${userStats.completionRate}%` : "—"} accent />
           </div>
         </header>
 

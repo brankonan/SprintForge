@@ -1,44 +1,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { authService } from "../services/authService";
-
-function Field({ id, label, type = "text", value, onChange, required }) {
-  return (
-    <div className={`sfa-field ${value ? "sfa-field--filled" : ""}`}>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder=" "
-        required={required}
-        autoComplete={type === "password" ? "current-password" : "email"}
-      />
-      <label htmlFor={id}>{label}</label>
-      <div className="sfa-field__line" />
-    </div>
-  );
-}
+import AuthField from "../components/AuthField";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    setServerError("");
     try {
-      const data = await authService.login(form.email, form.password);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
+      const res = await authService.login(data.email, data.password);
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res));
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Check your credentials.");
-    } finally {
-      setLoading(false);
+      setServerError(err.response?.data?.message || "Login failed. Check your credentials.");
     }
   };
 
@@ -91,33 +76,35 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {error && (
+          {serverError && (
             <div className="sfa-error">
               <span className="sfa-error__icon">!</span>
-              {error}
+              {serverError}
             </div>
           )}
 
-          <form className="sfa-form" onSubmit={handleSubmit}>
-            <Field
+          <form className="sfa-form" onSubmit={handleSubmit(onSubmit)}>
+            <AuthField
               id="email"
               label="Email address"
               type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
+              filled={!!watch("email")}
+              registration={register("email", { required: "Email is required" })}
+              error={errors.email?.message}
+              autoComplete="email"
             />
-            <Field
+            <AuthField
               id="password"
               label="Password"
               type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              required
+              filled={!!watch("password")}
+              registration={register("password", { required: "Password is required" })}
+              error={errors.password?.message}
+              autoComplete="current-password"
             />
 
-            <button type="submit" className="sfa-submit" disabled={loading}>
-              {loading ? (
+            <button type="submit" className="sfa-submit" disabled={isSubmitting}>
+              {isSubmitting ? (
                 <span className="sfa-submit__dots">
                   <span /><span /><span />
                 </span>

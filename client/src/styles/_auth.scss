@@ -394,6 +394,16 @@ $sfa-mono:    'IBM Plex Mono', monospace;
   }
 }
 
+// Field validation error
+.sfa-field__error {
+  display: block;
+  margin-top: 0.25rem;
+  padding-left: 0.875rem;
+  font-size: 0.72rem;
+  color: #f87171;
+  letter-spacing: 0.02em;
+}
+
 // Submit button
 .sfa-submit {
   width: 100%;

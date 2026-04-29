@@ -6,4 +6,5 @@ public interface IUserService
 {
     Task<List<PublicUserDto>> GetPublicUsers(string? search, int limit);
     Task<PublicPortfolioDto?> GetPublicPortfolio(Guid userId);
+    Task<UserStatsDto> GetUserStats(Guid userId);
 }
